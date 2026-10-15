@@ -1,0 +1,152 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Garage Slots & Roleta - Família Floripa Mini</title>
+    <link rel="stylesheet" href="style.css">
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700;900&display=swap" rel="stylesheet">
+</head>
+<body>
+    <div class="container">
+        <!-- TELA DE LOGIN / REGISTRO -->
+        <div id="auth-section" class="card glow-border">
+            <div class="logo-header">
+                <img src="/Fam%C3%ADlia%20Floripa%20Mini%20Coastal%20Badge.png" alt="Família Floripa Mini Logo" class="header-logo-img">
+            </div>
+
+            <div class="tab-buttons">
+                <button id="tab-login-btn" class="active" onclick="switchTab('login')">Login</button>
+                <button id="tab-register-btn" onclick="switchTab('register')">Cadastrar</button>
+            </div>
+
+            <!-- FORMULÁRIO DE LOGIN -->
+            <div id="form-login">
+                <input type="tel" id="login-phone" placeholder="WhatsApp (DDD + Número)">
+                <input type="password" id="login-pass" placeholder="Sua Senha">
+                <button onclick="login()">ENTRAR AGORA 🚀</button>
+            </div>
+
+            <!-- FORMULÁRIO DE CADASTRO -->
+            <div id="form-register" style="display: none;">
+                <div id="reg-step-1">
+                    <input type="tel" id="reg-phone" placeholder="WhatsApp (DDD + Número)">
+                    <input type="password" id="reg-pass" placeholder="Crie uma Senha">
+                    <button onclick="sendRegisterOTP()">ENVIAR CÓDIGO WHATSAPP 📲</button>
+                </div>
+                <div id="reg-step-2" style="display: none;">
+                    <input type="text" id="reg-otp" placeholder="Código de 6 dígitos">
+                    <button onclick="verifyRegister()">CONFIRMAR CADASTRO ✅</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- SELEÇÃO DE MODOS DE JOGO (PÓS-LOGIN) -->
+        <div id="game-selection-section" class="card glow-border" style="display: none;">
+            <div class="logo-header">
+                <img src="/Fam%C3%ADlia%20Floripa%20Mini%20Coastal%20Badge.png" alt="Família Floripa Mini Logo" class="header-logo-img">
+            </div>
+
+            <div class="user-welcome">
+                <span id="user-display-select">📱 ...</span>
+                <span class="spins-badge">🎰 <span id="spins-val-select">0</span> Giros</span>
+            </div>
+
+            <h2 class="select-title">🔥 ESCOLHA SEU JOGO E APOSTE! 🔥</h2>
+
+            <div class="game-modes-grid">
+                <div class="mode-card neon-gold" onclick="selectGameMode('slot')">
+                    <div class="mode-icon">🎰</div>
+                    <h3>GARAGE SLOTS (TIGRINHO)</h3>
+                    <p>Slot 3x3 com 8 Linhas de Prêmios - Alta Emoção!</p>
+                    <button class="btn-mode">JOGAR SLOTS 🏎️</button>
+                </div>
+                <div class="mode-card neon-purple" onclick="selectGameMode('wheel')">
+                    <div class="mode-icon">🎡</div>
+                    <h3>ROLETA CONVENCIONAL</h3>
+                    <p>Roda da Fortuna Giratória Clássica com Fotos e Prêmios</p>
+                    <button class="btn-mode">JOGAR ROLETA 🎡</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- ÁREA DO JOGO -->
+        <div id="game-section" class="card glow-border" style="display: none;">
+            <div class="logo-header">
+                <img src="/Fam%C3%ADlia%20Floripa%20Mini%20Coastal%20Badge.png" alt="Família Floripa Mini Logo" class="header-logo-img">
+            </div>
+
+            <div class="header-status">
+                <span id="user-display">📱 ...</span>
+                <button class="btn-switch-game" onclick="backToGameSelection()">🔄 Trocar Jogo</button>
+                <span class="spins-badge">🎰 <span id="spins-val">0</span> Giros</span>
+            </div>
+
+            <!-- MODE 1: SLOTS (TIGRINHO 3X3) -->
+            <div id="slot-container" class="slot-machine">
+                <div class="slot-grid">
+                    <div class="slot-cell" id="cell-0">🏎️</div>
+                    <div class="slot-cell" id="cell-1">🏎️</div>
+                    <div class="slot-cell" id="cell-2">🏎️</div>
+                    <div class="slot-cell" id="cell-3">🏎️</div>
+                    <div class="slot-cell" id="cell-4">🏎️</div>
+                    <div class="slot-cell" id="cell-5">🏎️</div>
+                    <div class="slot-cell" id="cell-6">🏎️</div>
+                    <div class="slot-cell" id="cell-7">🏎️</div>
+                    <div class="slot-cell" id="cell-8">🏎️</div>
+                </div>
+            </div>
+
+            <!-- MODE 2: ROLETA CONVENCIONAL COM IMAGENS -->
+            <div id="wheel-container" class="wheel-machine" style="display: none;">
+                <div class="wheel-wrapper">
+                    <div class="wheel-pointer">▼</div>
+                    <canvas id="wheel-canvas" width="340" height="340"></canvas>
+                </div>
+            </div>
+
+            <!-- CONTROLES PRINCIPAIS -->
+            <div class="controls">
+                <button id="spin-btn" onclick="handleSpin()">GIRAR AGORA 🏎️💨</button>
+                <button class="btn-shop" onclick="openShop()">🛒 COMPRAR GIROS</button>
+                <button class="btn-prizes" onclick="openPrizesModal()">🏆 MEUS PRÊMIOS</button>
+            </div>
+
+            <div id="result-msg"></div>
+        </div>
+    </div>
+
+    <!-- MODAL COMPRA DE GIROS -->
+    <div id="shop-modal" class="modal-overlay" style="display: none;">
+        <div class="modal-content glow-border">
+            <h3 class="no-spins-title">🛒 LOJA DE GIROS</h3>
+            <p class="modal-sub">Seus giros acabaram! Escolha um pacote para continuar jogando:</p>
+            <div class="package-list">
+                <div class="package-card" onclick="buySpins(10, 10)">
+                    <strong>10 GIROS</strong> - <span class="price">R$ 10,00</span>
+                </div>
+                <div class="package-card featured" onclick="buySpins(25, 20)">
+                    <span class="badge">MAIS VENDIDO 🔥</span>
+                    <strong>25 GIROS</strong> - <span class="price">R$ 20,00</span>
+                </div>
+                <div class="package-card" onclick="buySpins(70, 50)">
+                    <span class="badge">OFERTA VIP ⭐</span>
+                    <strong>70 GIROS</strong> - <span class="price">R$ 50,00</span>
+                </div>
+            </div>
+            <button class="btn-close-modal" onclick="closeShop()">Fechar</button>
+        </div>
+    </div>
+
+    <!-- MODAL DE PRÊMIOS -->
+    <div id="prizes-modal" class="modal-overlay" style="display: none;">
+        <div class="modal-content glow-border">
+            <h3>🏆 MEUS PRÊMIOS GANHOS</h3>
+            <div id="prizes-list" class="prizes-list"></div>
+            <button class="btn-close-modal" onclick="closePrizesModal()">Fechar</button>
+        </div>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>
